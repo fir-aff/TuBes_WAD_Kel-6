@@ -13,7 +13,7 @@ class AdminController extends Controller
         return view('admin.users', compact('users'));
     }
 
-    public function promote($id)
+    public function promote(Request $request, $id)
     {
         $user = User::findOrFail($id);
         $user->role = $request->role;
