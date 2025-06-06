@@ -43,7 +43,7 @@
         <form class="d-flex w-50">
             <input class="form-control" type="search" placeholder="Cari makanan atau minuman..." aria-label="Search">
         </form>
-        <div>
+        <div class="d-flex align-items-center gap-3">
             🛒 Keranjang (0)
 
             @guest

@@ -27,7 +27,7 @@
 <!-- Header -->
 <nav class="navbar navbar-expand-lg navbar-dark px-4 py-3 shadow">
     <div class="container-fluid">
-        <span class="navbar-brand fw-bold">🍴 Kantin Kampus</span>
+        <span class="navbar-brand fw-bold">🍴 Kantin Kampus - Manajemen Menu</span>
         <a href="/" class="btn btn-light btn-sm">← Kembali ke Beranda</a>
     </div>
 </nav>

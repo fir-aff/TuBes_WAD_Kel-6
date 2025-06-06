@@ -34,11 +34,21 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:penjual'])->prefix('penjual')->group(function () {
-    Route::get('/menu', [MenuController::class, 'index']);
+    Route::get('/manajemen', function () {
+        return view('penjual.manajemen');
+    });
+
+    Route::get('/menu', [MenuController::class, 'index'])-> name('menu');
     Route::post('/menu', [MenuController::class, 'store']);
     Route::put('/menu/{id}', [MenuController::class, 'update']);
     Route::delete('/menu/{id}', [MenuController::class, 'destroy']);
+
+    // untuk nanti
+    Route::get('/pesanan', function () {
+        return '<h3>Halaman Pemesanan (sementara kosong)</h3>';
+    });
 });
+
 
 Route::middleware(['auth', 'role:pelanggan'])->group(function () {
     Route::get('/pelanggan', function () {
