@@ -16,7 +16,7 @@ class AdminController extends Controller
     public function promote($id)
     {
         $user = User::findOrFail($id);
-        $user->role = 'penjual';
+        $user->role = $request->role;
         $user->save();
 
         return redirect()->back()->with('success', 'User berhasil diubah menjadi penjual.');
