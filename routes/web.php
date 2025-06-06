@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MenuController;
+use App\Models\Menu;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,7 +14,8 @@ use App\Http\Controllers\MenuController;
 
 // Halaman awal
 Route::get('/', function () {
-    return view('welcome');
+    $menus = Menu::all();
+    return view('welcome', compact('menus'));
 });
 
 // Halaman register & login

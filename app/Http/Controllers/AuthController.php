@@ -54,9 +54,9 @@ class AuthController extends Controller
                 if ($role === 'admin') {
                     return redirect('/admin/users'); // 👈 langsung ke daftar user
                 } elseif ($role === 'penjual') {
-                    return redirect('/penjual');
+                    return redirect('/penjual/menu'); // 👈 langsung ke menu penjual
                 } else {
-                    return redirect('/pelanggan');
+                    return redirect('/');
                 }
             return redirect()->intended('dashboard');
         }

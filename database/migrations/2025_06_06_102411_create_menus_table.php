@@ -31,6 +31,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('menus');
-        $table->dropColumn('gambar');
     }
 };
