@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\WelcomeController;
 use App\Models\Menu;
 
 /*
@@ -14,10 +15,11 @@ use App\Models\Menu;
 */
 
 // Halaman awal
-Route::get('/', function () {
-    $menus = Menu::all();
-    return view('welcome', compact('menus'));
-})->name('welcome');
+// Route::get('/', function () {
+//     $menus = Menu::all();
+//     return view('welcome', compact('menus'));
+// })->name('welcome');
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 // Halaman register & login
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');

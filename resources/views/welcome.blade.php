@@ -5,34 +5,15 @@
     <title>Kantin Kampus</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background: #f5f5fa;
-        }
-        .category-tag {
-            font-size: 0.75rem;
-            font-weight: bold;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 5px;
-            position: absolute;
-            top: 8px;
-            left: 8px;
-        }
-        .card-menu {
-            border-radius: 15px;
-            padding: 10px;
-            color: #333;
-            position: relative;
-            overflow: hidden;
-        }
-        .card-menu .title {
-            font-weight: 600;
-            margin-top: 5px;
-        }
+        body { background: #f5f5fa; }
+        .category-tag { font-size: 0.75rem; font-weight: bold; color: white; padding: 2px 6px; border-radius: 5px; position: absolute; top: 8px; left: 8px; }
+        .card-menu { border-radius: 15px; padding: 10px; color: #333; position: relative; overflow: hidden; }
+        .card-menu .title { font-weight: 600; margin-top: 5px; }
         .badge-minuman { background: #7f9cf5; }
         .badge-makanan { background: #f56565; }
         .badge-camilan  { background: #f6ad55; }
         .badge-dessert  { background: #ed64a6; }
+        .btn-kategori.active { background-color: #4a148c !important; color: white !important; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -82,27 +63,35 @@
         <p>Pesan makanan favoritmu dengan mudah dan cepat.</p>
         <button class="btn btn-light btn-sm text-primary">Promo Hari Ini</button>
     </div>
-
-    <div class="mt-4">
-        <span class="badge bg-secondary">Semua</span>
-        <span class="badge bg-info text-dark">Minuman</span>
-        <span class="badge bg-danger">Makanan Berat</span>
-        <span class="badge bg-warning text-dark">Camilan</span>
-        <span class="badge bg-pink">Dessert</span>
+    
+    {{-- Tombol Filter Kategori --}}
+    <div class="mt-4 d-flex gap-2">
+        @foreach($kategoriList as $kategori)
+            <a href="{{ route('welcome', ['kategori' => $kategori]) }}" 
+            class="btn btn-sm btn-outline-primary btn-kategori {{ ($kategoriPilihan ?? 'Semua') == $kategori ? 'active' : '' }}">
+                {{ $kategori }}
+            </a>
+        @endforeach
     </div>
 
-    <h5 class="mt-4 mb-3">Semua Menu</h5>
+    <h5 class="mt-4 mb-3">
+        @if($kategoriPilihan && $kategoriPilihan !== 'Semua')
+            Kategori: {{$kategoriPilihan}}
+        @else
+            Semua Menu
+        @endif
+    </h5>
 
     <div class="row g-4">
-        @foreach ($menus as $menu)
+        @forelse ($menus as $menu)
         @php
-            $kategori = strtolower($menu->kategori);
-            $warna = match($kategori) {
+            $kategori_menu = strtolower($menu->kategori);
+            $warna = match($kategori_menu) {
                 'minuman' => 'badge-minuman',
                 'makanan berat' => 'badge-makanan',
                 'camilan' => 'badge-camilan',
                 'dessert' => 'badge-dessert',
-                default => 'bg-secondary'
+                default => 'bg-secondary',
             };
         @endphp
         <div class="col-md-3">
@@ -126,7 +115,13 @@
                 </div>
             </div>
         </div>
-        @endforeach
+        @empty
+        <div class="col-12">
+            <div class="alert alert-secondary text-center">
+                Tidak ada menu yang tersedia untuk kategori ini.
+            </div>
+        </div>
+        @endforelse
     </div>
 </div>
 
