@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\CartController;
 use App\Models\Menu;
 
 /*
@@ -16,7 +17,7 @@ use App\Models\Menu;
 Route::get('/', function () {
     $menus = Menu::all();
     return view('welcome', compact('menus'));
-});
+})->name('welcome');
 
 // Halaman register & login
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -59,4 +60,11 @@ Route::middleware(['auth', 'role:pelanggan'])->group(function () {
 // Fallback: dashboard umum jika belum diarahkan
 Route::middleware('auth')->get('/dashboard', function () {
     return 'Selamat datang di dashboard, ' . auth()->user()->name;
+});
+
+Route::prefix('keranjang')->name('cart.')->group(function () {
+    Route::get('/', [CartController::class, 'show'])->name('show');
+    Route::post('/tambah', [CartController::class, 'add'])->name('add');
+    Route::post('/update', [CartController::class, 'update'])->name('update');
+    Route::post('/hapus', [CartController::class, 'remove'])->name('remove');
 });

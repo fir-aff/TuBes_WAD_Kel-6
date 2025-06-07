@@ -44,7 +44,18 @@
             <input class="form-control" type="search" placeholder="Cari makanan atau minuman..." aria-label="Search">
         </form>
         <div class="d-flex align-items-center gap-3">
-            🛒 Keranjang (0)
+            <a href="{{ route('cart.show') }}" class="btn btn-light position-relative">
+                🛒 Keranjang
+                @php
+                    $cartCount = count(session('cart', []));
+                @endphp
+                @if($cartCount > 0)
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ $cartCount }}
+                    <span class="visually-hidden">items in cart</span>
+                </span>
+                @endif
+            </a>
 
             @guest
                 <a href="{{ route('login') }}" class="btn btn-light btn-sm">Login</a>
@@ -61,6 +72,11 @@
 </nav>
 
 <div class="container my-4">
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="p-4 rounded text-white" style="background: linear-gradient(135deg, #7f00ff, #7c43bd);">
         <h4>Selamat Datang di Kantin Kampus!</h4>
         <p>Pesan makanan favoritmu dengan mudah dan cepat.</p>
@@ -95,11 +111,18 @@
                 @if ($menu->gambar)
                     <img src="{{ asset('storage/menu/' . $menu->gambar) }}" class="w-100 mb-2 rounded" style="height: 150px; object-fit: cover;">
                 @endif
-                <div class="title">{{ $menu->nama }}</div>
-                <small class="text-muted d-block mb-2">{{ $menu->deskripsi }}</small>
-                <strong class="text-primary">Rp {{ number_format($menu->harga, 0, ',', '.') }}</strong>
-                <div class="text-end mt-2">
-                    <button class="btn btn-sm btn-outline-primary">+</button>
+                <div class="card-body d-flex flex-column">
+                    <div class="title">{{ $menu->nama }}</div>
+                    <small class="text-muted d-block mb-2">{{ $menu->deskripsi }}</small>
+                    <strong class="text-primary">Rp {{ number_format($menu->harga, 0, ',', '.') }}</strong>
+                    <form action="{{ route('cart.add') }}" method="POST" class="d-grid">
+                        @csrf
+                        <input type="hidden" name="menu_id" value="{{ $menu->id }}">
+                        <input type="hidden" name="nama" value="{{ $menu->nama }}">
+                        <input type="hidden" name="harga" value="{{ $menu->harga }}">
+                        <input type="hidden" name="gambar" value="{{ $menu->gambar }}">
+                        <button type="submit" class="btn btn-primary">+</button>
+                    </form>
                 </div>
             </div>
         </div>
