@@ -41,12 +41,21 @@
             @guest
                 <a href="{{ route('login') }}" class="btn btn-light btn-sm">Login</a>
             @endguest
-            @auth
-                <span class="text-white">{{ auth()->user()->name }}</span>
-                <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="btn btn-danger btn-sm">Logout</button>
-                </form>
+           @auth
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        {{ auth()->user()->name }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profil Saya</a></li>
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST" onsubmit="return confirm('Yakin ingin logout?')">
+                                @csrf
+                                <button class="dropdown-item text-danger" type="submit">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             @endauth
         </div>
     </div>
@@ -124,6 +133,7 @@
         @endforelse
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
