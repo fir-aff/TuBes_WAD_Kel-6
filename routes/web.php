@@ -13,19 +13,14 @@ use App\Models\Menu;
 |--------------------------------------------------------------------------
 */
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 // Halaman awal
 Route::get('/', function () {
     $menus = Menu::all();
     return view('welcome', compact('menus'));
 });
-=======
-=======
->>>>>>> Stashed changes
+
 // Halaman utama
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
->>>>>>> Stashed changes
 
 // Autentikasi
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -73,15 +68,12 @@ Route::middleware(['auth', 'role:pelanggan'])->group(function () {
     Route::get('/pelanggan/pesanan', [OrderController::class, 'history'])->name('order.history');
 });
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
 // Fallback: dashboard umum jika belum diarahkan
 Route::middleware('auth')->get('/dashboard', function () {
     return 'Selamat datang di dashboard, ' . auth()->user()->name;
 });
-=======
-=======
->>>>>>> Stashed changes
+
 
 // ================= CART =================
 Route::prefix('keranjang')->name('cart.')->group(function () {
@@ -94,7 +86,4 @@ Route::prefix('keranjang')->name('cart.')->group(function () {
 // ================= ORDER =================
 // Disimpan di luar grup agar bisa diakses oleh pelanggan
 Route::post('/order/selesai', [OrderController::class, 'store'])->name('order.selesai');
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
