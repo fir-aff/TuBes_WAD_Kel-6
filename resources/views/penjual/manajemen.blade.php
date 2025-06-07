@@ -57,19 +57,13 @@
             </a>
         </div>
         <div class="col-md-4">
-            <a href="{{ route('login') }}" class="role-box d-block bg-primary-subtle text-center text-decoration-none">
+            <a href="{{ route('order.index') }}" class="role-box d-block bg-primary-subtle text-center text-decoration-none">
                 <div class="fs-1">🧑‍🍳</div>
                 <h6 class="fw-bold mt-2">Pesanan</h6>
                 <p class="text-muted small">Kelola pesanan dari pelanggan</p>
             </a>
         </div>
-        <!-- <div class="col-md-4">
-            <a href="{{ route('login') }}" class="role-box d-block bg-danger-subtle text-center text-decoration-none">
-                <div class="fs-1">🛠️</div>
-                <h6 class="fw-bold mt-2">Admin</h6>
-                <p class="text-muted small">Kelola sistem dan pengguna</p>
-            </a>
-        </div> -->
+
     </div>
 
     <div class="footer mt-4">

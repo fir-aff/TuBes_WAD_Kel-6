@@ -11,7 +11,7 @@
         .payment-card { max-width: 700px; margin: 40px auto; }
         .quantity-input { width: 60px; }
         .item-subtotal {
-            width: 120px; /* Beri lebar agar sejajar */
+            width: 120px;
             text-align: right;
         }
     </style>
@@ -30,23 +30,20 @@
         <h4 class="mb-4">Detail Pesanan</h4>
 
         @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+            <div class="alert alert-success">{{ session('success') }}</div>
         @endif
-        
+
         @forelse ($cartItems as $id => $item)
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center">
                     @if(isset($item['gambar']))
-                    <img src="{{ asset('storage/menu/' . $item['gambar']) }}" width="60" class="rounded me-3">
+                        <img src="{{ asset('storage/menu/' . $item['gambar']) }}" width="60" class="rounded me-3">
                     @endif
                     <div>
                         <h6 class="mb-0">{{ $item['nama'] }}</h6>
                         <small class="text-muted">Rp {{ number_format($item['harga'], 0, ',', '.') }}</small>
                     </div>
                 </div>
-
                 <div class="d-flex align-items-center">
                     <form action="{{ route('cart.update') }}" method="POST" class="me-2">
                         @csrf
@@ -68,23 +65,48 @@
                 Keranjang Anda masih kosong. Silakan <a href="{{ route('welcome') }}">pilih menu</a>.
             </div>
         @endforelse
-        
+
         @if(count($cartItems) > 0)
         <hr class="my-3">
         <div class="d-flex justify-content-between fw-bold mb-4">
             <h5 class="mb-0">Total Pembayaran</h5>
             <h5 class="mb-0 text-primary">Rp {{ number_format($totalPembayaran, 0, ',', '.') }}</h5>
         </div>
-        {{-- Form Metode Pembayaran dan Tombol Bayar --}}
-        <form action="{{-- Arahkan ke route proses pembayaran --}}" method="POST">
-            @csrf
-            {{-- ... (Opsi metode pembayaran) ... --}}
-            <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary btn-lg">Bayar Sekarang</button>
-            </div>
-        </form>
+
+        {{-- Tombol Bayar Sekarang (memicu modal) --}}
+        <div class="d-grid mt-4">
+            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#qrModal">
+                Bayar Sekarang
+            </button>
+        </div>
         @endif
     </div>
 </div>
+
+<!-- Modal QR Code -->
+<div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-3">
+      <div class="modal-header">
+        <h5 class="modal-title" id="qrModalLabel">Pembayaran</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p>Silakan scan QR code di bawah ini untuk membayar:</p>
+        <img src="{{ asset('images/qrcode.png') }}" alt="QR Code" width="200">
+      </div>
+      <div class="modal-footer">
+        <form action="{{ route('order.selesai') }}" method="POST">
+          @csrf
+          <button type="submit" class="btn btn-primary">Selesai Bayar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap Bundle JS (wajib agar modal bekerja) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
