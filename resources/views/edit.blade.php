@@ -53,6 +53,9 @@
                 </div>
 
                 <button type="submit" class="btn btn-warning w-100">Ubah Password</button>
+                <a href="{{ route('welcome') }}" class="btn btn-primary w-100 py-2 rounded text-white text-center mt-3">
+                    🏠 Kembali ke Beranda
+                </a>
             </form>
         </div>
     </div>
