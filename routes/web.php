@@ -8,6 +8,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\KategoriController;
 use App\Models\Menu;
 
 /*
@@ -32,16 +33,18 @@ Route::middleware('auth')->get('/dashboard', function () {
 });
 
 // ==================== ADMIN ====================
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/users', [AdminController::class, 'showUsers']);
-    Route::post('/admin/users/{id}/promote', [AdminController::class, 'promote']);
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/users', [AdminController::class, 'showUsers']);
+    Route::post('/users/{id}/promote', [AdminController::class, 'promote']);
+    Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
 });
+
 
 // ==================== PENJUAL ====================
 Route::middleware(['auth', 'role:penjual'])->prefix('penjual')->group(function () {
     Route::get('/manajemen', function () {
         return view('penjual.manajemen');
-    });
+    })->name('manajemen');
 
     // Menu
     Route::get('/menu', [MenuController::class, 'index'])->name('menu');
@@ -53,6 +56,9 @@ Route::middleware(['auth', 'role:penjual'])->prefix('penjual')->group(function (
     Route::get('/orderan', [OrderController::class, 'index'])->name('order.index');
     Route::post('/orderan/{id}/selesai', [OrderController::class, 'selesaikan'])->name('order.selesaikan');
     Route::post('/orderan/{id}/batal', [OrderController::class, 'batal'])->name('order.batal');
+
+    // Delete Orderan
+    Route::delete('/orderan/{id}/hapus', [OrderController::class, 'hapus'])->name('order.hapus');
 });
 
 // ==================== PELANGGAN ====================

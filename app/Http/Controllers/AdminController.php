@@ -24,4 +24,16 @@ class AdminController extends Controller
 
     return redirect()->back()->with('success', $pesan);
     }
+    public function destroy($id)
+{
+    if (auth()->id() == $id) {
+        return back()->with('error', 'Tidak bisa menghapus akun sendiri.');
+    }
+
+    $user = User::findOrFail($id);
+    $user->delete();
+
+    return back()->with('success', 'User berhasil dihapus.');
+}
+
 }
