@@ -13,35 +13,26 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $userId = Auth::id();
-        $carts = \App\Models\Cart::where('user_id', $userId)->get();
+        $carts = session('cart', []);
 
-        if ($carts->isEmpty()) {
+        if (empty($carts)) {
             return redirect()->back()->with('error', 'Keranjang kosong!');
         }
 
-        foreach ($carts as $item) {
-            try {
-                \Log::info("CART ITEM => menu_id: {$item->menu_id}, jumlah: {$item->jumlah}");
-
-                $order = Order::create([
-                    'user_id' => $userId,
-                    'menu_id' => $item->menu_id,
-                    'jumlah' => $item->jumlah,
-                    'status' => 'Menunggu Konfirmasi'
-                ]);
-
-                \Log::info("ORDER CREATED ID => " . $order->id);
-
-            } catch (\Exception $e) {
-                \Log::error('GAGAL ORDER: ' . $e->getMessage());
-                return redirect()->back()->with('error', 'Gagal menyimpan pesanan.');
-            }
+        foreach ($carts as $menuId => $item) {
+            Order::create([
+                'user_id' => $userId,
+                'menu_id' => $menuId,
+                'jumlah' => $item['kuantitas'],
+                'status' => 'Menunggu Konfirmasi',
+            ]);
         }
 
-        \App\Models\Cart::where('user_id', $userId)->delete();
+        session()->forget('cart');
 
         return redirect()->route('order.history')->with('success', 'Pesanan berhasil dibuat!');
     }
+
 
 
     public function index()
