@@ -41,25 +41,39 @@
 <body>
 
 <div class="text-center position-absolute top-0 w-100 mt-4">
-    <div class="text-brand">
-        🍴 Kantin Kampus
-    </div>
+    <div class="text-brand">🍴 Kantin Kampus</div>
 </div>
 
 <div class="card bg-white">
     <h4 class="text-center mb-4 text-primary fw-bold">Buat Akun Baru</h4>
+
+    {{-- Notifikasi Sukses --}}
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    {{-- Tampilkan error validasi --}}
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
         <div class="mb-3">
             <label for="name">Nama Lengkap</label>
-            <input type="text" name="name" id="name" class="form-control" placeholder="Nama lengkap" required autofocus>
+            <input type="text" name="name" id="name" class="form-control" placeholder="Nama lengkap" required autofocus value="{{ old('name') }}">
         </div>
 
         <div class="mb-3">
-            <label for="email">Email / Username</label>
-            <input type="email" name="email" id="email" class="form-control" placeholder="Email atau username" required>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="Email" required value="{{ old('email') }}">
         </div>
 
         <div class="mb-3">
@@ -77,7 +91,10 @@
         </div>
 
         <div class="text-center mt-3">
-            Sudah punya akun? <a href="{{ route('login') }}">Daftar di sini</a>
+            Sudah punya akun? <a href="{{ route('login') }}">Login di sini</a>
         </div>
+    </form>
+</div>
 
-        <div class="text-center mt-3">
+</body>
+</html>

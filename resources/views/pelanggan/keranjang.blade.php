@@ -93,7 +93,7 @@
       </div>
       <div class="modal-body text-center">
         <p>Silakan scan QR code di bawah ini untuk membayar:</p>
-        <img src="{{ asset('images/qrcode.png') }}" alt="QR Code" width="200">
+        <img src="{{ asset('storage/qrcode.jpg') }}" alt="QR Code" width="200">
       </div>
       <div class="modal-footer">
         <form action="{{ route('order.selesai') }}" method="POST">

@@ -35,6 +35,7 @@ Route::middleware('auth')->get('/dashboard', function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/users', [AdminController::class, 'showUsers']);
     Route::post('/admin/users/{id}/promote', [AdminController::class, 'promote']);
+    Route::delete('/admin/users/{id}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
 });
 
 // ==================== PENJUAL ====================
