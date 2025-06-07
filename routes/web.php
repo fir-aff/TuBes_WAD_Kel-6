@@ -22,6 +22,7 @@ Route::get('/', function () {
 // Halaman utama
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
+
 // Autentikasi
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
