@@ -45,7 +45,7 @@
 <body>
 
 <div class="card-container">
-    <h4 class="fw-bold mb-2">🍽️ Selamat Datang di Kantin Kampus</h4>
+    <h4 class="fw-bold mb-2">🍽️ Selamat Datang di Manajemen Kantin Kampus</h4>
     <p class="text-muted mb-4">Silakan pilih</p>
 
     <div class="row g-3 justify-content-center">
