@@ -63,7 +63,20 @@
                 <p class="text-muted small">Kelola pesanan dari pelanggan</p>
             </a>
         </div>
+        <div class="col-md-4">
+            <a href="{{ route('logout') }}" 
+            class="role-box d-block bg-success-subtle text-center text-decoration-none h-100" 
+            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                
+                <div class="fs-1">🚪</div>
+                <h6 class="fw-bold mt-2">Logout</h6>
+                <p class="text-muted small">Keluar dari halaman ini</p>
+            </a>
 
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+        </div>
     </div>
 
     <div class="footer mt-4">
