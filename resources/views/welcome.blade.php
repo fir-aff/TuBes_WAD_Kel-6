@@ -45,7 +45,7 @@
             @guest
                 <a href="{{ route('login') }}" class="btn btn-light btn-sm">Login</a>
             @endguest
-           @auth
+            @auth
                 <div class="dropdown">
                     <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                         {{ auth()->user()->name }}
