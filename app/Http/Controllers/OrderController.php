@@ -41,7 +41,6 @@ class OrderController extends Controller
         return view('penjual.orderan', compact('orders'));
     }
 
-
     public function selesaikan($id)
     {
         Order::findOrFail($id)->update(['status' => 'Selesai']);
@@ -59,4 +58,13 @@ class OrderController extends Controller
         $orders = Order::with('menu')->where('user_id', $userId)->latest()->get();
         return view('pelanggan.pesanan', compact('orders'));
     }
+
+    public function hapus($id)
+{
+    $order = Order::findOrFail($id);
+    $order->delete();
+
+    return back()->with('success', 'Pesanan berhasil dihapus!');
+}
+
 }

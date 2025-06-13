@@ -54,7 +54,7 @@ class AuthController extends Controller
                 return match ($role) {
                     'admin' => redirect('/admin/users'),
                     'penjual' => redirect('/penjual/manajemen'),
-                    'pelanggan' => redirect('/pelanggan'),
+                    'pelanggan' => redirect('/'),
                     default => redirect('/'),
                 };
         }

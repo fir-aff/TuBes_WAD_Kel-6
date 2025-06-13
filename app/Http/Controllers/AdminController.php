@@ -16,9 +16,24 @@ class AdminController extends Controller
     public function promote(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $user->role = $request->role;
+        $roleBaru = $request->role;
+        $user->role = $roleBaru;
         $user->save();
 
-        return redirect()->back()->with('success', 'User berhasil diubah menjadi penjual.');
+    $pesan = 'User berhasil diubah menjadi ' . $roleBaru . '.';
+
+    return redirect()->back()->with('success', $pesan);
     }
+    public function destroy($id)
+{
+    if (auth()->id() == $id) {
+        return back()->with('error', 'Tidak bisa menghapus akun sendiri.');
+    }
+
+    $user = User::findOrFail($id);
+    $user->delete();
+
+    return back()->with('success', 'User berhasil dihapus.');
+}
+
 }
