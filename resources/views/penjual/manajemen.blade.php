@@ -46,7 +46,7 @@
 
 <div class="card-container">
     <h4 class="fw-bold mb-2">🍽️ Selamat Datang di Kantin Kampus</h4>
-    <p class="text-muted mb-4">Silakan pilih peran login kamu</p>
+    <p class="text-muted mb-4">Silakan pilih aksi berikut: Tambah Menu atau Kelola Pesanan</p>
 
     <div class="row g-3 justify-content-center">
         <div class="col-md-4">

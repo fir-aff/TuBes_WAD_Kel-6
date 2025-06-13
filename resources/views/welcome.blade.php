@@ -37,6 +37,10 @@
                 </span>
                 @endif
             </a>
+            <a href="{{ route('order.history') }}" class="btn btn-light">
+                📜 History
+            </a>
+
 
             @guest
                 <a href="{{ route('login') }}" class="btn btn-light btn-sm">Login</a>
