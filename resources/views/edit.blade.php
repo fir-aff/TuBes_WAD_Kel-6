@@ -146,7 +146,7 @@
     </div>
 
     <div class="mt-3">
-        <a href="#" class="btn btn-purple w-100"> <i class="fas fa-history"></i> Riwayat Pembelian
+        <a href="{{ route('order.history') }}" class="btn btn-purple w-100"> <i class="fas fa-history"></i> Riwayat Pembelian
         </a>
     </div>
 
