@@ -6,11 +6,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f5f5fa;
+            /* background-color: #f5f5fa; */
+            background: linear-gradient(135deg, #7f00ff, #7c43bd);
             font-family: 'Segoe UI', sans-serif;
         }
         .navbar {
-            background: linear-gradient(to right, #7f00ff, #7c43bd);
+            background: rgba(0, 0, 0, 0.25);
         }
         .btn-purple {
             background-color: #7f00ff;
@@ -25,7 +26,7 @@
 <body>
 
 <!-- Header -->
-<nav class="navbar navbar-expand-lg navbar-dark px-4 py-3 shadow">
+<nav class="navbar navbar-expand-lg navbar-dark px-4 py-2 shadow">
     <div class="container-fluid">
         <span class="navbar-brand fw-bold">🍴 Kantin Kampus - Manajemen Menu</span>
         <a href="/penjual/manajemen" class="btn btn-light btn-sm">← Kembali</a>

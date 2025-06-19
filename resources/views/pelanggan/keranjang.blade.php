@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark px-4">
+<nav class="navbar navbar-dark px-4 py-2">
     <div class="container-fluid">
         <span class="navbar-brand mb-0 h1">Pembayaran Kantin</span>
         <a href="{{ route('welcome') }}" class="btn btn-light btn-sm">Kembali ke Menu</a>

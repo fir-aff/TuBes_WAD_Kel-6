@@ -14,6 +14,9 @@
         .container {
             max-width: 800px;
         }
+        .navbar {
+            background-color:rgba(0, 0, 0, 0.25);
+        }
         .card-pesanan {
             background: white;
             border-radius: 1rem;
@@ -51,7 +54,12 @@
                 <h6 class="fw-bold mb-2">🍔 {{ $order->menu->nama }}</h6>
                 <p class="mb-1">Jumlah: {{ $order->jumlah }}</p>
                 <p class="mb-0">Status: 
-                    <span class="badge bg-secondary badge-status">{{ $order->status }}</span>
+                    <span class="badge bg-secondary badge-status
+                        @if($order->status == 'Selesai') bg-success 
+                        @elseif($order->status == 'Dibatalkan') bg-danger 
+                        @else bg-secondary @endif">
+                        {{ $order->status }}
+                    </span>
                 </p>
             </div>
         </div>

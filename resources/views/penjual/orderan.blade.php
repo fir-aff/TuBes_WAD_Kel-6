@@ -12,7 +12,7 @@
             font-family: 'Segoe UI', sans-serif;
         }
         .navbar {
-            background-color: #4a148c;
+            background-color:rgba(0, 0, 0, 0.25);
         }
         .order-card {
             background: white;
@@ -31,7 +31,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark px-4">
+<nav class="navbar navbar-dark px-4 py-2 shadow">
     <div class="container-fluid">
         <span class="navbar-brand mb-0 h1">📦 Orderan Masuk</span>
         <a href="{{ route('manajemen') }}" class="btn btn-light btn-sm">🍽️ Kembali ke Manajemen</a>
