@@ -14,7 +14,13 @@ class Order extends Model
         'menu_id',
         'jumlah',
         'status',
+        'seller_id',
     ];
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 
     public function menu()
     {
@@ -24,5 +30,10 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function seller()
+    {
+        return $this->belongsTo(User::class, 'seller_id'); // Merujuk ke User model dengan foreign key 'seller_id'
     }
 }

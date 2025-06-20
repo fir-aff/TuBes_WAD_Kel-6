@@ -112,6 +112,8 @@
                 <span class="category-tag {{ $warna }}">{{ ucfirst($menu->kategori) }}</span>
                 @if ($menu->gambar)
                     <img src="{{ asset('storage/menu/' . $menu->gambar) }}" class="w-100 mb-2 rounded" style="height: 150px; object-fit: cover;">
+                @else
+                    <img src="{{ asset('storage/default_product.png') }}" class="w-100 mb-2 rounded" style="height: 150px; object-fit: cover;">
                 @endif
                 <div class="card-body d-flex flex-column">
                     <div class="title">{{ $menu->nama }}</div>

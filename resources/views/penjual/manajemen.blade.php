@@ -57,7 +57,7 @@
             </a>
         </div>
         <div class="col-md-4">
-            <a href="{{ route('order.index') }}" class="role-box d-block bg-primary-subtle text-center text-decoration-none h-100">
+            <a href="{{ route('orderan.index') }}" class="role-box d-block bg-primary-subtle text-center text-decoration-none h-100">
                 <div class="fs-1">🧑‍🍳</div>
                 <h6 class="fw-bold mt-2">Pesanan</h6>
                 <p class="text-muted small">Kelola pesanan dari pelanggan</p>

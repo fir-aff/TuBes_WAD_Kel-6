@@ -96,7 +96,7 @@
         <img src="{{ asset('storage/qrcode.jpg') }}" alt="QR Code" width="200">
       </div>
       <div class="modal-footer">
-        <form action="{{ route('order.selesai') }}" method="POST">
+        <form action="{{ route('order.done') }}" method="POST">
           @csrf
           <button type="submit" class="btn btn-primary">Selesai Bayar</button>
         </form>
