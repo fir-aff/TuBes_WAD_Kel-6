@@ -61,7 +61,55 @@ class OrderController extends Controller
         return redirect()->route('orders.index')->with('success', 'Pesanan berhasil dibuat!');
     }
 
+    public function storeApi(Request $request) // Metode baru untuk API
+    {
+        $userId = Auth::id();
+        $carts = Session()->get('cart', []);
 
+        if (empty($carts)) {
+            return redirect()->back()->with('error', 'Keranjang kosong!');
+        }
+
+        foreach ($carts as $menuId => $item) {
+            $menu = Menu::find($menuId);
+
+            if (!$menu) {
+                // Log atau tangani jika menu tidak ditemukan (seharusnya tidak terjadi jika keranjang terisi dengan menu valid)
+                Log::error('Menu dengan ID ' . $menuId . ' tidak ditemukan saat membuat pesanan.');
+                continue; // Lanjutkan ke item berikutnya di keranjang jika menu tidak ditemukan
+            }
+
+            // Dapatkan seller_id dari menu yang dipesan
+            $sellerId = $menu->user_id;
+
+            if (is_null($sellerId)) {
+                // Handle jika menu tidak memiliki seller_user_id yang terdefinisi
+                Log::warning('Menu ID ' . $menuId . ' tidak memiliki seller_user_id yang terdefinisi. Pesanan tidak dapat ditugaskan ke penjual.');
+                // Anda bisa memilih untuk:
+                // 1. Melewatkan item ini
+                // 2. Mengatur seller_id ke default (misal, admin)
+                // 3. Mengembalikan error ke pengguna
+                return redirect()->back()->with('error', 'Pesanan gagal: Menu "' . $menu->nama . '" belum memiliki penjual yang terdaftar.');
+            }
+
+            try {
+                Order::create([
+                    'user_id' => $userId,
+                    'menu_id' => $menuId,
+                    'jumlah' => $item['kuantitas'],
+                    'status' => 'Menunggu Konfirmasi',
+                    'seller_id' => $sellerId,
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Gagal membuat pesanan untuk menu ID ' . $menuId . ': ' . $e->getMessage());
+                return redirect()->back()->with('error', 'Terjadi kesalahan saat membuat pesanan untuk beberapa item. Silakan coba lagi.');
+            }
+        }
+
+        session()->forget('cart');
+
+        return response()->json(['message' => 'Pesanan berhasil dibuat!', 'order' => $order], 201);
+    }
 
     public function index()
     {

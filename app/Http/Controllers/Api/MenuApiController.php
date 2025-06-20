@@ -3,123 +3,114 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Menu;
-use Illuminate\Support\Facades\Validator; // Tambahkan ini untuk validasi
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage; // Untuk upload gambar
+use Illuminate\Support\Facades\Auth; // Untuk mendapatkan seller_user_id
 
 class MenuApiController extends Controller
 {
-    /**
-     * Menampilkan semua data menu.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $menus = Menu::all();
-        return response()->json([
-            'success' => true,
-            'message' => 'Daftar semua menu berhasil diambil.',
-            'data' => $menus
-        ]);
-    }
+        $query = Menu::query();
 
-    /**
-     * Menampilkan satu data menu berdasarkan ID.
-     */
-    public function show($id)
-    {
-        $menu = Menu::find($id);
-
-        if ($menu) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Detail menu berhasil diambil.',
-                'data' => $menu
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Menu tidak ditemukan.',
-            ], 404);
+        // Filter berdasarkan kategori (contoh)
+        if ($request->has('kategori')) {
+            $query->where('kategori', $request->kategori);
         }
+        // Filter berdasarkan nama (contoh)
+        if ($request->has('search')) {
+            $query->where('nama', 'like', '%' . $request->search . '%');
+        }
+
+        $menus = $query->latest()->get(); // Atau paginate()
+
+        return response()->json($menus);
     }
 
-    /**
-     * Menyimpan menu baru.
-     */
+    public function show(Menu $menu)
+    {
+        return response()->json($menu);
+    }
+
     public function store(Request $request)
     {
-        // Validasi input
-        $validator = Validator::make($request->all(), [
-            'nama_menu' => 'required|string|max:255',
-            'harga' => 'required|integer',
-            'deskripsi' => 'required|string',
-            'kategori' => 'required|string',
-            // tambahkan validasi lain jika perlu, misal untuk gambar
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string|max:1000',
+            'harga' => 'required|numeric|min:0',
+            'kategori' => 'required|string|in:makanan berat,minuman,camilan,dessert',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // optional
         ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+        $imagePath = null;
+        if ($request->hasFile('gambar')) {
+            $imagePath = $request->file('gambar')->store('menu', 'public');
         }
 
-        // Buat menu baru dengan data yang sudah divalidasi
-        $menu = Menu::create($validator->validated());
+        $menu = Menu::create([
+            'nama' => $request->nama,
+            'deskripsi' => $request->deskripsi,
+            'harga' => $request->harga,
+            'kategori' => $request->kategori,
+            'gambar' => $imagePath,
+            'seller_user_id' => Auth::id(), // Otomatis set seller_user_id
+        ]);
 
         return response()->json([
-            'success' => true,
-            'message' => 'Menu baru berhasil ditambahkan.',
-            'data' => $menu
+            'message' => 'Menu created successfully',
+            'menu' => $menu
         ], 201);
     }
 
-    /**
-     * Memperbarui data menu berdasarkan ID.
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, Menu $menu)
     {
-        $menu = Menu::find($id);
+        // Otorisasi: Pastikan user yang update adalah pemilik menu atau admin
+        // if ($request->user()->id !== $menu->seller_user_id && !$request->user()->hasRole('admin')) {
+        //     return response()->json(['message' => 'Unauthorized'], 403);
+        // }
 
-        if (!$menu) {
-            return response()->json(['message' => 'Menu tidak ditemukan'], 404);
-        }
-
-        // Validasi input
-        $validator = Validator::make($request->all(), [
-            'nama_menu' => 'sometimes|required|string|max:255',
-            'harga' => 'sometimes|required|integer',
-            'deskripsi' => 'sometimes|required|string',
-            'kategori' => 'sometimes|required|string',
+        $request->validate([
+            'nama' => 'sometimes|required|string|max:255',
+            'deskripsi' => 'nullable|string|max:1000',
+            'harga' => 'sometimes|required|numeric|min:0',
+            'kategori' => 'sometimes|required|string|in:makanan berat,minuman,camilan,dessert',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+        $imagePath = $menu->gambar;
+        if ($request->hasFile('gambar')) {
+            if ($menu->gambar) {
+                Storage::disk('public')->delete($menu->gambar);
+            }
+            $imagePath = $request->file('gambar')->store('menu', 'public');
+        } elseif ($request->input('clear_gambar')) { // Handle hapus gambar tanpa upload baru
+            if ($menu->gambar) {
+                Storage::disk('public')->delete($menu->gambar);
+                $imagePath = null;
+            }
         }
 
-        // Update menu dengan data yang sudah divalidasi
-        $menu->update($validator->validated());
+        $menu->update($request->except(['gambar', 'clear_gambar']) + ['gambar' => $imagePath]);
 
         return response()->json([
-            'success' => true,
-            'message' => 'Menu berhasil diperbarui.',
-            'data' => $menu
+            'message' => 'Menu updated successfully',
+            'menu' => $menu
         ]);
     }
 
-    /**
-     * Menghapus menu berdasarkan ID.
-     */
-    public function destroy($id)
+    public function destroy(Menu $menu)
     {
-        $menu = Menu::find($id);
+        // Otorisasi: Pastikan user yang menghapus adalah pemilik menu atau admin
+        // if ($request->user()->id !== $menu->seller_user_id && !$request->user()->hasRole('admin')) {
+        //     return response()->json(['message' => 'Unauthorized'], 403);
+        // }
 
-        if (!$menu) {
-            return response()->json(['message' => 'Menu tidak ditemukan'], 404);
+        if ($menu->gambar) {
+            Storage::disk('public')->delete($menu->gambar);
         }
-
         $menu->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Menu berhasil dihapus.'
-        ]);
+        return response()->json(['message' => 'Menu deleted successfully']);
     }
 }
