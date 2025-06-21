@@ -9,6 +9,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\ReviewController;
 use App\Models\Menu;
 
 /*
@@ -53,7 +54,7 @@ Route::middleware(['auth', 'role:penjual'])->prefix('penjual')->group(function (
     Route::delete('/menu/{id}', [MenuController::class, 'destroy']);
 
     // Order
-    Route::get('/orderan', [OrderController::class, 'index'])->name('order.index');
+    Route::get('/orderan', [OrderController::class, 'index'])->name('orderan.index');
     Route::post('/orderan/{id}/selesai', [OrderController::class, 'selesaikan'])->name('order.selesaikan');
     Route::post('/orderan/{id}/batal', [OrderController::class, 'batal'])->name('order.batal');
 
@@ -80,7 +81,16 @@ Route::prefix('keranjang')->name('cart.')->group(function () {
 });
 
 // ==================== ORDER (PEMESANAN) ====================
-Route::post('/order/selesai', [OrderController::class, 'store'])->name('order.selesai');
+Route::post('/order/selesai', [OrderController::class, 'store'])->name('order.done');
+Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+Route::post('/orders/reorder/{order}', [OrderController::class, 'reorder'])->name('orders.reorder'); // Kamu perlu implementasikan ini
+
+// Routes untuk Ulasan              
+Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+Route::get('/reviews/product/{menu}', [ReviewController::class, 'showProductReviews'])->name('reviews.show_product');
+Route::get('/reviews/{review}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
+Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
+Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
 // ==================== PROFIL ====================
 Route::middleware('auth')->group(function () {
