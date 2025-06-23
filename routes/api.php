@@ -25,13 +25,6 @@ Route::post('/login', [AuthApiController::class, 'login']);
 Route::get('/menus', [MenuApiController::class, 'index']); // Get all menus
 Route::get('/menus/{menu}', [MenuApiController::class, 'show']); // Get specific menu
 
-    // API Cart (keranjang belanja)
-    Route::get('/cart', [CartController::class, 'index']); // Get user's cart
-    Route::post('/cart/add', [CartController::class, 'add']); // Add item to cart
-    Route::put('/cart/{menu_id}', [CartController::class, 'update']); // Update item quantity
-    Route::delete('/cart/{menu_id}', [CartController::class, 'remove']); // Remove item from cart
-    Route::post('/cart/checkout', [CartController::class, 'checkout']); // Process checkout
-
 // Group Routes yang Membutuhkan Otentikasi (menggunakan middleware 'auth:sanctum')
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthApiController::class, 'user']);
@@ -44,11 +37,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/menus/{menu}', [MenuApiController::class, 'update']);
         Route::delete('/menus/{menu}', [MenuApiController::class, 'destroy']);
     });
-
-    // API Order (untuk user yang login) - Riwayat Pesanan
-    // Anda bisa tambahkan OrderApiController jika ingin API terpisah untuk order
-    // Atau gunakan OrderController yang sudah ada jika metode-nya diubah untuk return JSON
-    // Contoh sederhana jika OrderController dibuat API-friendly:
-    // Route::get('/orders', [OrderController::class, 'indexApi']); // Ambil order user
-    // Route::post('/orders/{id}/selesai', [OrderController::class, 'selesaikanApi']); // Contoh
 });
+
+
+
+
+    // // API Cart (keranjang belanja)
+    // Route::get('/cart', [CartController::class, 'index']); // Get user's cart
+    // Route::post('/cart/add', [CartController::class, 'add']); // Add item to cart
+    // Route::put('/cart/{menu_id}', [CartController::class, 'update']); // Update item quantity
+    // Route::delete('/cart/{menu_id}', [CartController::class, 'remove']); // Remove item from cart
+    // Route::post('/cart/checkout', [CartController::class, 'checkout']); // Process checkout
+
+    // // API Order (untuk user yang login) - Riwayat Pesanan
+    // // Anda bisa tambahkan OrderApiController jika ingin API terpisah untuk order
+    // // Atau gunakan OrderController yang sudah ada jika metode-nya diubah untuk return JSON
+    // // Contoh sederhana jika OrderController dibuat API-friendly:
+    // // Route::get('/orders', [OrderController::class, 'indexApi']); // Ambil order user
+    // // Route::post('/orders/{id}/selesai', [OrderController::class, 'selesaikanApi']); // Contoh

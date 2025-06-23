@@ -63,35 +63,32 @@ class MenuApiController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, Menu $menu)
+    public function update(Request $request, Menu $id)
     {
         // Otorisasi: Pastikan user yang update adalah pemilik menu atau admin
         // if ($request->user()->id !== $menu->seller_user_id && !$request->user()->hasRole('admin')) {
         //     return response()->json(['message' => 'Unauthorized'], 403);
         // }
 
-        $request->validate([
-            'nama' => 'sometimes|required|string|max:255',
-            'deskripsi' => 'nullable|string|max:1000',
-            'harga' => 'sometimes|required|numeric|min:0',
-            'kategori' => 'sometimes|required|string|in:makanan berat,minuman,camilan,dessert',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        $menu = Menu::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+
+        $data = $request->validate([
+            'nama' => 'required|string|max:255',
+            'kategori' => 'required|string',
+            'harga' => 'required|numeric',
+            'deskripsi' => 'nullable|string',
+            'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $imagePath = $menu->gambar;
+        // handle gambar baru (opsional)
         if ($request->hasFile('gambar')) {
-            if ($menu->gambar) {
-                Storage::disk('public')->delete($menu->gambar);
-            }
-            $imagePath = $request->file('gambar')->store('menu', 'public');
-        } elseif ($request->input('clear_gambar')) { // Handle hapus gambar tanpa upload baru
-            if ($menu->gambar) {
-                Storage::disk('public')->delete($menu->gambar);
-                $imagePath = null;
-            }
+            $file = $request->file('gambar');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/menu', $filename);
+            $data['gambar'] = $filename;
         }
 
-        $menu->update($request->except(['gambar', 'clear_gambar']) + ['gambar' => $imagePath]);
+        $menu->update($data);
 
         return response()->json([
             'message' => 'Menu updated successfully',
@@ -99,16 +96,14 @@ class MenuApiController extends Controller
         ]);
     }
 
-    public function destroy(Menu $menu)
+    public function destroy(Menu $id)
     {
         // Otorisasi: Pastikan user yang menghapus adalah pemilik menu atau admin
         // if ($request->user()->id !== $menu->seller_user_id && !$request->user()->hasRole('admin')) {
         //     return response()->json(['message' => 'Unauthorized'], 403);
         // }
 
-        if ($menu->gambar) {
-            Storage::disk('public')->delete($menu->gambar);
-        }
+        $menu = Menu::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
         $menu->delete();
 
         return response()->json(['message' => 'Menu deleted successfully']);
