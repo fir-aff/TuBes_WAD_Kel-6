@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -20,20 +21,46 @@ class AdminController extends Controller
         $user->role = $roleBaru;
         $user->save();
 
-    $pesan = 'User berhasil diubah menjadi ' . $roleBaru . '.';
-
-    return redirect()->back()->with('success', $pesan);
+        $pesan = 'User berhasil diubah menjadi ' . $roleBaru . '.';
+        return redirect()->back()->with('success', $pesan);
     }
+
     public function destroy($id)
-{
-    if (auth()->id() == $id) {
-        return back()->with('error', 'Tidak bisa menghapus akun sendiri.');
+    {
+        if (auth()->id() == $id) {
+            return back()->with('error', 'Tidak bisa menghapus akun sendiri.');
+        }
+
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return back()->with('success', 'User berhasil dihapus.');
     }
 
-    $user = User::findOrFail($id);
-    $user->delete();
+    /**
+     * Reset user password
+     */
+    public function resetPassword(Request $request, $id)
+    {
+        $request->validate([
+            'new_password' => 'required|string|min:8',
+        ]);
 
-    return back()->with('success', 'User berhasil dihapus.');
+        if (auth()->id() == $id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak bisa reset password akun sendiri.'
+            ]);
+        }
+
+        $user = User::findOrFail($id);
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password user berhasil direset.'
+        ]);
+    }
 }
 
-}

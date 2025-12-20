@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Kantin Kampus</title>
+    <title>Reset Password - Kantin Kampus</title>
     @vite('resources/css/app.css')
 </head>
 <body class="bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 min-h-screen flex items-center justify-center p-4">
@@ -19,81 +19,66 @@
             <!-- Logo -->
             <div class="text-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-100 to-red-100 rounded-full mb-4">
-                    <span class="text-3xl">🍴</span>
+                    <span class="text-3xl">🔐</span>
                 </div>
                 <h1 class="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                    Kantin Kampus
+                    Buat Password Baru
                 </h1>
-                <p class="text-slate-500 mt-1">Masuk ke akunmu untuk memesan</p>
+                <p class="text-slate-500 mt-1 text-sm">Masukkan password baru Anda</p>
             </div>
 
             <!-- Form -->
-            <form method="POST" action="{{ route('login') }}" class="space-y-4">
+            <form method="POST" action="{{ route('password.update') }}" class="space-y-4">
                 @csrf
+                <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-                <!-- Email/Username -->
+                <!-- Email (hidden) -->
+                <input type="hidden" name="email" value="{{ $request->email }}">
+
+                <!-- New Password -->
                 <div>
-                    <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">
-                        📧 Email atau Username
+                    <label for="password" class="block text-sm font-semibold text-slate-700 mb-2">
+                        🔒 Password Baru
                     </label>
-                    <input type="text" 
-                           name="email" 
-                           id="email" 
-                           class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition bg-slate-50"
-                           placeholder="Masukkan email atau username"
-                           value="{{ old('email') }}"
-                           required 
-                           autofocus>
-                    @error('email')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Password -->
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <label for="password" class="block text-sm font-semibold text-slate-700">
-                            🔒 Kata Sandi
-                        </label>
-                        <a href="{{ route('password.request') }}" class="text-xs font-semibold text-orange-600 hover:text-orange-700 transition">
-                            Lupa Password?
-                        </a>
-                    </div>
                     <input type="password" 
                            name="password" 
                            id="password" 
                            class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition bg-slate-50"
-                           placeholder="Masukkan kata sandi"
-                           required>
+                           placeholder="Masukkan password minimal 8 karakter"
+                           required 
+                           autofocus>
                     @error('password')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <!-- Login Button -->
+                <!-- Confirm Password -->
+                <div>
+                    <label for="password_confirmation" class="block text-sm font-semibold text-slate-700 mb-2">
+                        ✓ Konfirmasi Password
+                    </label>
+                    <input type="password" 
+                           name="password_confirmation" 
+                           id="password_confirmation" 
+                           class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition bg-slate-50"
+                           placeholder="Konfirmasi password Anda"
+                           required>
+                    @error('password_confirmation')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Submit Button -->
                 <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-lg hover:shadow-lg transition duration-300 mt-6">
-                    ✓ Masuk Sekarang
+                    🔐 Reset Password
                 </button>
             </form>
 
-            <!-- Divider -->
-            <div class="relative">
-                <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-slate-200"></div>
-                </div>
-                <div class="relative flex justify-center text-sm">
-                    <span class="px-2 bg-white text-slate-500">atau</span>
-                </div>
-            </div>
-
-            <!-- Register Link -->
+            <!-- Back to Login -->
             <div class="text-center">
-                <p class="text-slate-600">
-                    Belum punya akun?
-                    <a href="{{ route('register') }}" class="font-bold text-orange-600 hover:text-orange-700 transition">
-                        Daftar di sini
-                    </a>
-                </p>
+                <a href="{{ route('login') }}" class="text-sm font-semibold text-orange-600 hover:text-orange-700 transition">
+                    ← Kembali ke login
+                </a>
             </div>
         </div>
 

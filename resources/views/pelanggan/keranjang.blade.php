@@ -1,112 +1,206 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pembayaran Keranjang - Kantin Kampus</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #f0f2f5; }
-        .navbar { background-color: #4a148c; }
-        .payment-card { max-width: 700px; margin: 40px auto; }
-        .quantity-input { width: 60px; }
-        .item-subtotal {
-            width: 120px;
-            text-align: right;
-        }
-    </style>
+    <title>Keranjang Belanja - Kantin Kampus</title>
+    @vite('resources/css/app.css')
 </head>
-<body>
+<body class="bg-gradient-to-b from-slate-50 to-slate-100 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">🛒</span>
+                    <span class="text-xl font-bold text-orange-600">Keranjang Belanja</span>
+                </div>
+                <a href="{{ route('welcome') }}" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg font-semibold text-slate-700 transition">
+                    ← Kembali ke Menu
+                </a>
+            </div>
+        </div>
+    </nav>
 
-<nav class="navbar navbar-dark px-4 py-2">
-    <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1">Pembayaran Kantin</span>
-        <a href="{{ route('welcome') }}" class="btn btn-light btn-sm">Kembali ke Menu</a>
-    </div>
-</nav>
-
-<div class="container">
-    <div class="card shadow-sm border-0 p-4 p-md-5 payment-card">
-        <h4 class="mb-4">Detail Pesanan</h4>
-
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg text-green-700 font-medium">
+                ✓ {{ session('success') }}
+            </div>
+        @endif
+        
+        @if(session('error'))
+            <div class="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-lg text-red-700 font-medium">
+                ✗ {{ session('error') }}
+            </div>
         @endif
 
         @forelse ($cartItems as $id => $item)
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="d-flex align-items-center">
+            <!-- Cart Item Card -->
+            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition mb-4 overflow-hidden">
+                <div class="p-6 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+                    <!-- Image -->
                     @if(isset($item['gambar']))
-                        <img src="{{ asset('storage/menu/' . $item['gambar']) }}" width="60" class="rounded me-3">
+                        <img src="{{ asset('storage/menu/' . $item['gambar']) }}" alt="{{ $item['nama'] }}" 
+                             class="w-24 h-24 rounded-lg object-cover flex-shrink-0">
+                    @else
+                        <div class="w-24 h-24 rounded-lg bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center text-3xl flex-shrink-0">
+                            🍽️
+                        </div>
                     @endif
-                    <div>
-                        <h6 class="mb-0">{{ $item['nama'] }}</h6>
-                        <small class="text-muted">Rp {{ number_format($item['harga'], 0, ',', '.') }}</small>
+
+                    <!-- Details -->
+                    <div class="flex-grow">
+                        <h3 class="text-xl font-bold text-slate-800">{{ $item['nama'] }}</h3>
+                        <p class="text-lg text-orange-600 font-semibold mt-2">
+                            Rp {{ number_format($item['harga'], 0, ',', '.') }}
+                        </p>
                     </div>
-                </div>
-                <div class="d-flex align-items-center">
-                    <form action="{{ route('cart.update') }}" method="POST" class="me-2">
-                        @csrf
-                        <input type="hidden" name="menu_id" value="{{ $id }}">
-                        <input type="number" name="kuantitas" value="{{ $item['kuantitas'] }}" class="form-control form-control-sm quantity-input" onchange="this.form.submit()">
-                    </form>
-                    <div class="item-subtotal me-3">
-                        <span class="fw-bold">Rp {{ number_format($item['harga'] * $item['kuantitas'], 0, ',', '.') }}</span>
+
+                    <!-- Quantity & Subtotal -->
+                    <div class="flex flex-col sm:flex-row gap-4 items-end sm:items-center w-full sm:w-auto">
+                        <form action="{{ route('cart.update') }}" method="POST" class="flex items-center gap-2">
+                            @csrf
+                            <input type="hidden" name="menu_id" value="{{ $id }}">
+                            <label class="font-semibold text-slate-600 text-sm">Qty:</label>
+                            <input type="number" name="kuantitas" value="{{ $item['kuantitas'] }}" 
+                                   class="w-16 px-3 py-2 border-2 border-slate-200 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition text-center"
+                                   onchange="this.form.submit()" min="1">
+                        </form>
+
+                        <div class="text-xl font-bold text-orange-600 w-full sm:w-32 text-right">
+                            Rp {{ number_format($item['harga'] * $item['kuantitas'], 0, ',', '.') }}
+                        </div>
+
+                        <form action="{{ route('cart.remove') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="menu_id" value="{{ $id }}">
+                            <button type="submit" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-bold transition">
+                                🗑️ Hapus
+                            </button>
+                        </form>
                     </div>
-                    <form action="{{ route('cart.remove') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="menu_id" value="{{ $id }}">
-                        <button type="submit" class="btn btn-danger btn-sm">×</button>
-                    </form>
                 </div>
             </div>
         @empty
-            <div class="alert alert-secondary text-center">
-                Keranjang Anda masih kosong. Silakan <a href="{{ route('welcome') }}">pilih menu</a>.
+            <!-- Empty Cart -->
+            <div class="bg-white rounded-xl shadow-md p-12 text-center">
+                <div class="text-6xl mb-4">🛒</div>
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Keranjang Kosong</h2>
+                <p class="text-slate-600 mb-6">Mulai pilih menu favorit Anda sekarang!</p>
+                <a href="{{ route('welcome') }}" class="inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-lg hover:shadow-lg transition">
+                    Lihat Menu
+                </a>
             </div>
         @endforelse
 
+        <!-- Summary Card -->
         @if(count($cartItems) > 0)
-        <hr class="my-3">
-        <div class="d-flex justify-content-between fw-bold mb-4">
-            <h5 class="mb-0">Total Pembayaran</h5>
-            <h5 class="mb-0 text-primary">Rp {{ number_format($totalPembayaran, 0, ',', '.') }}</h5>
-        </div>
+            <div class="mt-8 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border-2 border-orange-200 p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800">Ringkasan Pesanan</h2>
+                    <span class="text-4xl font-bold text-transparent bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text">
+                        Rp {{ number_format($totalPembayaran, 0, ',', '.') }}
+                    </span>
+                </div>
 
-        {{-- Tombol Bayar Sekarang (memicu modal) --}}
-        <div class="d-grid mt-4">
-            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#qrModal">
-                Bayar Sekarang
-            </button>
-        </div>
+                <!-- Checkout Button -->
+                <button type="button" id="checkoutBtn"
+                        class="w-full py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-lg rounded-lg hover:shadow-lg hover:scale-105 transition">
+                    💳 Lanjutkan Pembayaran
+                </button>
+            </div>
+
+            <!-- Payment Modal (Tailwind) -->
+            <div id="paymentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-fade-in">
+                    <!-- Modal Header -->
+                    <div class="bg-gradient-to-r from-orange-500 to-red-500 text-white p-6">
+                        <h2 class="text-2xl font-bold">💳 Konfirmasi Pembayaran</h2>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="p-8 text-center space-y-6">
+                        <div>
+                            <p class="text-slate-600 text-sm mb-4">Silakan scan QR code di bawah untuk membayar:</p>
+                            <div class="bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg p-4 inline-block">
+                                @if(file_exists(public_path('storage/qrcode.jpg')))
+                                    <img src="{{ asset('storage/qrcode.jpg') }}" alt="QR Code" class="w-48 h-48 rounded-lg">
+                                @else
+                                    <div class="w-48 h-48 flex items-center justify-center text-slate-400 font-semibold">
+                                        QR Code (belum tersedia)
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="bg-orange-50 rounded-lg p-4 border-2 border-orange-200">
+                            <p class="text-slate-600 text-sm mb-1">Total Pembayaran</p>
+                            <p class="text-3xl font-bold text-transparent bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text">
+                                Rp {{ number_format($totalPembayaran, 0, ',', '.') }}
+                            </p>
+                        </div>
+
+                        <div class="bg-blue-50 rounded-lg p-3 border-2 border-blue-200">
+                            <p class="text-blue-700 text-sm font-medium">ℹ️ Setelah melakukan pembayaran, klik tombol "Selesai Bayar" di bawah</p>
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="border-t p-4 flex gap-3 justify-end">
+                        <button type="button" id="cancelPaymentBtn"
+                                class="px-6 py-2 bg-slate-200 text-slate-800 rounded-lg font-semibold hover:bg-slate-300 transition">
+                            Batal
+                        </button>
+                        <form action="{{ route('order.done') }}" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="px-6 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg font-semibold hover:shadow-lg transition">
+                                ✓ Selesai Bayar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Overlay Close -->
+            <script>
+                const checkoutBtn = document.getElementById('checkoutBtn');
+                const paymentModal = document.getElementById('paymentModal');
+                const cancelPaymentBtn = document.getElementById('cancelPaymentBtn');
+
+                checkoutBtn.addEventListener('click', () => {
+                    paymentModal.classList.remove('hidden');
+                });
+
+                cancelPaymentBtn.addEventListener('click', () => {
+                    paymentModal.classList.add('hidden');
+                });
+
+                paymentModal.addEventListener('click', (e) => {
+                    if (e.target === paymentModal) {
+                        paymentModal.classList.add('hidden');
+                    }
+                });
+            </script>
         @endif
     </div>
-</div>
 
-<!-- Modal QR Code -->
-<div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content p-3">
-      <div class="modal-header">
-        <h5 class="modal-title" id="qrModalLabel">Pembayaran</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-      </div>
-      <div class="modal-body text-center">
-        <p>Silakan scan QR code di bawah ini untuk membayar:</p>
-        <img src="{{ asset('storage/qrcode.jpg') }}" alt="QR Code" width="200">
-      </div>
-      <div class="modal-footer">
-        <form action="{{ route('order.done') }}" method="POST">
-          @csrf
-          <button type="submit" class="btn btn-primary">Selesai Bayar</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+    <style>
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.3s ease-out;
+        }
+    </style>
 
-<!-- Bootstrap Bundle JS (wajib agar modal bekerja) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    @vite('resources/js/app.js')
 </body>
 </html>

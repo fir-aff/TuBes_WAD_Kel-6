@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Models\Order;
 use App\Models\Cart;
 use App\Models\Menu;
@@ -14,7 +15,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $userId = Auth::id();
-        $carts = Session()->get('cart', []);
+        $carts = session()->get('cart', []);
 
         if (empty($carts)) {
             return redirect()->back()->with('error', 'Keranjang kosong!');
@@ -58,13 +59,14 @@ class OrderController extends Controller
 
         session()->forget('cart');
 
-        return redirect()->route('orders.index')->with('success', 'Pesanan berhasil dibuat!');
+        // Setelah pelanggan menyelesaikan pembayaran, arahkan ke riwayat pesanan pelanggan
+        return redirect()->route('order.history')->with('success', 'Pesanan berhasil dibuat!');
     }
 
     public function storeApi(Request $request) // Metode baru untuk API
     {
         $userId = Auth::id();
-        $carts = Session()->get('cart', []);
+        $carts = session()->get('cart', []);
 
         if (empty($carts)) {
             return redirect()->back()->with('error', 'Keranjang kosong!');
@@ -108,7 +110,7 @@ class OrderController extends Controller
 
         session()->forget('cart');
 
-        return response()->json(['message' => 'Pesanan berhasil dibuat!', 'order' => $order], 201);
+        return response()->json(['message' => 'Pesanan berhasil dibuat!'], 201);
     }
 
     public function index()

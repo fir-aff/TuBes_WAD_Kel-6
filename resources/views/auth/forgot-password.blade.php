@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Kantin Kampus</title>
+    <title>Lupa Password - Kantin Kampus</title>
     @vite('resources/css/app.css')
 </head>
 <body class="bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 min-h-screen flex items-center justify-center p-4">
@@ -19,28 +19,35 @@
             <!-- Logo -->
             <div class="text-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-100 to-red-100 rounded-full mb-4">
-                    <span class="text-3xl">🍴</span>
+                    <span class="text-3xl">🔑</span>
                 </div>
                 <h1 class="text-3xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                    Kantin Kampus
+                    Reset Password
                 </h1>
-                <p class="text-slate-500 mt-1">Masuk ke akunmu untuk memesan</p>
+                <p class="text-slate-500 mt-1 text-sm">Masukkan email untuk menerima link reset</p>
             </div>
 
+            <!-- Info Message -->
+            @if (session('status'))
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-4">
+                    <p class="text-green-700 font-medium text-sm">✓ {{ session('status') }}</p>
+                </div>
+            @endif
+
             <!-- Form -->
-            <form method="POST" action="{{ route('login') }}" class="space-y-4">
+            <form method="POST" action="{{ route('password.email') }}" class="space-y-4">
                 @csrf
 
-                <!-- Email/Username -->
+                <!-- Email -->
                 <div>
                     <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">
-                        📧 Email atau Username
+                        📧 Email
                     </label>
-                    <input type="text" 
+                    <input type="email" 
                            name="email" 
                            id="email" 
                            class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition bg-slate-50"
-                           placeholder="Masukkan email atau username"
+                           placeholder="Masukkan email akun Anda"
                            value="{{ old('email') }}"
                            required 
                            autofocus>
@@ -49,30 +56,9 @@
                     @enderror
                 </div>
 
-                <!-- Password -->
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <label for="password" class="block text-sm font-semibold text-slate-700">
-                            🔒 Kata Sandi
-                        </label>
-                        <a href="{{ route('password.request') }}" class="text-xs font-semibold text-orange-600 hover:text-orange-700 transition">
-                            Lupa Password?
-                        </a>
-                    </div>
-                    <input type="password" 
-                           name="password" 
-                           id="password" 
-                           class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition bg-slate-50"
-                           placeholder="Masukkan kata sandi"
-                           required>
-                    @error('password')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Login Button -->
+                <!-- Submit Button -->
                 <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-lg hover:shadow-lg transition duration-300 mt-6">
-                    ✓ Masuk Sekarang
+                    📧 Kirim Link Reset
                 </button>
             </form>
 
@@ -86,12 +72,12 @@
                 </div>
             </div>
 
-            <!-- Register Link -->
+            <!-- Back to Login -->
             <div class="text-center">
                 <p class="text-slate-600">
-                    Belum punya akun?
-                    <a href="{{ route('register') }}" class="font-bold text-orange-600 hover:text-orange-700 transition">
-                        Daftar di sini
+                    Ingat password?
+                    <a href="{{ route('login') }}" class="font-bold text-orange-600 hover:text-orange-700 transition">
+                        Kembali ke login
                     </a>
                 </p>
             </div>

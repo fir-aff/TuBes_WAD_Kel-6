@@ -12,28 +12,38 @@ class WelcomeController extends Controller
      */
     public function index(Request $request)
     {
-        // 1. Ambil nilai 'kategori' dari query string di URL
+        // Ambil nilai 'kategori' dan 'q' (search) dari query string
         $kategoriPilihan = $request->query('kategori');
+        $q = trim((string) $request->query('q', ''));
 
-        // 2. Siapkan query builder untuk model Menu
+        // Siapkan query builder untuk model Menu
         $query = Menu::query();
 
-        // 3. Jika ada kategori yang dipilih (dan bukan 'Semua'), filter data
+        // Filter berdasarkan kategori jika dipilih
         if ($kategoriPilihan && $kategoriPilihan !== 'Semua') {
             $query->where('kategori', $kategoriPilihan);
         }
 
-        // 4. Eksekusi query untuk mendapatkan data menu
+        // Jika ada query pencarian, filter nama atau deskripsi
+        if ($q !== '') {
+            $query->where(function ($sub) use ($q) {
+                $sub->where('nama', 'like', "%{$q}%")
+                    ->orWhere('deskripsi', 'like', "%{$q}%");
+            });
+        }
+
+        // Ambil hasil
         $menus = $query->latest()->get();
 
-        // 5. INI BAGIAN PENTING: Definisikan daftar kategori yang akan menjadi tombol
+        // Daftar kategori untuk tombol filter
         $kategoriList = ['Semua', 'Makanan Berat', 'Minuman', 'Camilan', 'Dessert'];
 
-        // 6. Kirim SEMUA data yang diperlukan ke view 'welcome'
+        // Kirim data ke view
         return view('welcome', [
             'menus' => $menus,
             'kategoriList' => $kategoriList,
-            'kategoriPilihan' => $kategoriPilihan ?: 'Semua'
+            'kategoriPilihan' => $kategoriPilihan ?: 'Semua',
+            'q' => $q,
         ]);
     }
 }

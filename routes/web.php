@@ -28,6 +28,12 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// Forgot Password Routes
+Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendPasswordResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+
 // ==================== DASHBOARD UMUM ====================
 Route::middleware('auth')->get('/dashboard', function () {
     return 'Selamat datang di dashboard, ' . auth()->user()->name;
@@ -37,6 +43,7 @@ Route::middleware('auth')->get('/dashboard', function () {
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/users', [AdminController::class, 'showUsers']);
     Route::post('/users/{id}/promote', [AdminController::class, 'promote']);
+    Route::post('/users/{id}/reset-password', [AdminController::class, 'resetPassword']);
     Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
 });
 

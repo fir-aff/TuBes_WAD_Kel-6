@@ -2,156 +2,113 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profil - Kantin Kampus</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        body {
-            /* Menyesuaikan gradient agar lebih sesuai dengan gambar */
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            min-height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .profile-card {
-            background: white;
-            border-radius: 1.25rem; /* Sedikit menyesuaikan border-radius */
-            padding: 2.5rem; /* Menambah padding agar lebih lega */
-            width: 100%;
-            max-width: 550px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            position: relative;
-        }
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 1.5rem;
-            color: #333;
-            text-decoration: none;
-        }
-        .back-btn:hover {
-            color: #6a11cb;
-        }
-        .profile-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: #333;
-            font-weight: 600;
-        }
-        .section-title {
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 1rem;
-        }
-        .form-label {
-            color: #555;
-            font-weight: 500;
-        }
-        .form-control {
-            border-radius: 0.5rem;
-            border: 1px solid #ddd;
-        }
-        .form-control:focus {
-            border-color: #8A2BE2;
-            box-shadow: 0 0 0 0.2rem rgba(138, 43, 226, 0.25);
-        }
-        /* Menyesuaikan warna tombol agar lebih cocok */
-        .btn-purple {
-            background-color: #5e35b1;
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            font-weight: 500;
-        }
-        .btn-purple:hover {
-            background-color: #4527a0;
-            color: white;
-        }
-        .btn-yellow {
-            background-color: #fdd835;
-            color: #333;
-            border: none;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            font-weight: 500;
-        }
-        .btn-yellow:hover {
-            background-color: #fbc02d;
-            color: #333;
-        }
-        .btn i {
-            margin-right: 8px; /* Jarak antara ikon dan teks */
-        }
-    </style>
+    @vite('resources/css/app.css')
 </head>
-<body>
-
-<div class="profile-card">
-    <a href="{{ route('welcome') }}" class="back-btn"><i class="fas fa-arrow-left"></i></a>
-
-    <h4 class="profile-header"><i class="fas fa-user-edit"></i> Edit Profil</h4>
-
-    @if(session('success'))
-        <div class="alert alert-success text-center">{{ session('success') }}</div>
-    @endif
-
-    <form action="{{ route('profile.update') }}" method="POST" class="mb-4">
-        @csrf
-        <div class="mb-3">
-            <label for="name" class="form-label">Nama</label>
-            <input type="text" id="name" name="name" class="form-control" value="{{ old('name', $user->name) }}">
-        </div>
-
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" name="email" class="form-control" value="{{ old('email', $user->email) }}">
-        </div>
-
-        <button type="submit" class="btn btn-purple w-100 mt-3">
-            <i class="fas fa-save"></i> Simpan Perubahan
-        </button>
-    </form>
-
-    <div class="mt-4">
-        <h5 class="section-title"><i class="fas fa-lock"></i> Ubah Password</h5>
-        <form action="{{ route('profile.password') }}" method="POST">
-            @csrf
-            <div class="mb-3">
-                <label for="current_password" class="form-label">Password Saat Ini</label>
-                <input type="password" id="current_password" name="current_password" class="form-control">
-                @error('current_password') <small class="text-danger">{{ $message }}</small> @enderror
-            </div>
-
-            <div class="mb-3">
-                <label for="password" class="form-label">Password Baru</label>
-                <input type="password" id="password" name="password" class="form-control">
-                 @error('password') <small class="text-danger">{{ $message }}</small> @enderror
-            </div>
-
-            <div class="mb-3">
-                <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
-                <input type="password" id="password_confirmation" name="password_confirmation" class="form-control">
-            </div>
-
-            <button type="submit" class="btn btn-yellow w-100">
-                <i class="fas fa-key"></i> Ubah Password
-            </button>
-        </form>
-    </div>
-
-    <div class="mt-3">
-        <a href="{{ route('order.history') }}" class="btn btn-purple w-100"> <i class="fas fa-history"></i> Riwayat Pembelian
+<body class="bg-gradient-to-b from-slate-50 to-slate-100 min-h-screen">
+    <div class="max-w-2xl mx-auto px-4 py-8 sm:py-12">
+        <!-- Back Button -->
+        <a href="{{ route('welcome') }}" class="inline-flex items-center gap-2 text-orange-600 font-semibold hover:text-orange-700 mb-6 transition">
+            ← Kembali ke Beranda
         </a>
+
+        <!-- Main Card -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-orange-500 to-red-500 p-8 text-white">
+                <h1 class="text-3xl font-bold">👤 Edit Profil</h1>
+                <p class="text-orange-50 mt-1">Kelola informasi akun Anda</p>
+            </div>
+
+            <div class="p-8 space-y-8">
+                <!-- Success Alert -->
+                @if(session('success'))
+                    <div class="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg text-green-700 font-medium">
+                        ✓ {{ session('success') }}
+                    </div>
+                @endif
+
+                <!-- Section 1: Edit Profil -->
+                <div class="border-b pb-8">
+                    <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        📝 Informasi Dasar
+                    </h2>
+                    
+                    <form action="{{ route('profile.update') }}" method="POST" class="space-y-5">
+                        @csrf
+                        <div>
+                            <label for="name" class="block text-sm font-semibold text-slate-700 mb-2">Nama Lengkap</label>
+                            <input type="text" id="name" name="name" 
+                                   class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition bg-slate-50"
+                                   value="{{ old('name', $user->name) }}" required>
+                            @error('name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">Email</label>
+                            <input type="email" id="email" name="email" 
+                                   class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition bg-slate-50"
+                                   value="{{ old('email', $user->email) }}" required>
+                            @error('email') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-lg hover:shadow-lg transition">
+                            💾 Simpan Perubahan
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Section 2: Ubah Password -->
+                <div class="border-b pb-8">
+                    <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        🔒 Ubah Password
+                    </h2>
+                    
+                    <form action="{{ route('profile.password') }}" method="POST" class="space-y-5">
+                        @csrf
+                        <div>
+                            <label for="current_password" class="block text-sm font-semibold text-slate-700 mb-2">Password Saat Ini</label>
+                            <input type="password" id="current_password" name="current_password" 
+                                   class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition bg-slate-50"
+                                   required>
+                            @error('current_password') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-sm font-semibold text-slate-700 mb-2">Password Baru</label>
+                            <input type="password" id="password" name="password" 
+                                   class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition bg-slate-50"
+                                   required>
+                            @error('password') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label for="password_confirmation" class="block text-sm font-semibold text-slate-700 mb-2">Konfirmasi Password Baru</label>
+                            <input type="password" id="password_confirmation" name="password_confirmation" 
+                                   class="w-full px-4 py-3 rounded-lg border-2 border-slate-200 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition bg-slate-50"
+                                   required>
+                        </div>
+
+                        <button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-lg hover:shadow-lg transition">
+                            🔐 Ubah Password
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Section 3: Quick Links -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <a href="{{ route('order.history') }}" class="p-4 bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-200 rounded-lg hover:shadow-md transition text-center font-semibold text-purple-700">
+                        📜 Riwayat Pembelian
+                    </a>
+                    <a href="{{ route('welcome') }}" class="p-4 bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-lg hover:shadow-md transition text-center font-semibold text-green-700">
+                        🏠 Kembali ke Menu
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @vite('resources/js/app.js')
 </body>
 </html>
